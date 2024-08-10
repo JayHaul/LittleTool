@@ -1,0 +1,18 @@
+﻿{
+  "Update": {
+    "CheckUpdateAtStartUp": false
+  },
+  "Folders": {
+    "Download": "E:/workspace/Python/PyQt-Fluent-Widgets-PyQt6/PyQt-Fluent-Widgets-PyQt6/examples/gallery/app/download",
+    "LocalMusic": []
+  },
+  "MainWindow": {
+    "DpiScale": "Auto",
+    "Language": "Auto",
+    "MicaEnabled": true
+  },
+  "QFluentWidgets": {
+    "ThemeColor": "#ff009faa",
+    "ThemeMode": "Auto"
+  }
+}

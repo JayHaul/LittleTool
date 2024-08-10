@@ -1,0 +1,15 @@
+{
+    "datas": {
+        "DataRead": [
+            "E:/workspace/Python/Desktop"
+        ],
+        "FileSuffix": [
+            "csv"
+        ],
+        "Save": "E:/workspace/Python/Desktop/UI/smallTool/app/data"
+    },
+    "QFluentWidgets": {
+        "ThemeColor": "#ff009faa",
+        "ThemeMode": "Auto"
+    }
+}
