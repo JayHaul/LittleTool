@@ -20,7 +20,7 @@ class DealDataBase:
         self.batch_id = batch_id
         self.radar = pd.read_csv(file_path, encoding='gb18030')
         self.df = None 
-        self.db = SQLUtils("data.db")
+        self.db = SQLUtils(r"E:\workspace\Python\Desktop\UI\smallTool\app\data")
         
 
     # 只获取需要用到的列
@@ -34,6 +34,8 @@ class DealDataBase:
         df_c = self.df.copy()
         df_c.loc[:, 'frame'] = np.ceil( self.df['Utc_msec'] / cycle )
         df_c.loc[:, 'file'] = self.file_name
+        # 添加行号作为ID列
+        df_c = df_c.reset_index().rename(columns={'index': 'ID'})
         self.df = df_c
         
     # 编写子类来重写该方法,这是用来处理数据的
@@ -43,15 +45,14 @@ class DealDataBase:
     # 这是整个处理流程
     # 比如处理类 Zero:
     # Zero(数据文件路径).execute()就可以了
-    def execute(self):
+    async def execute(self):
         self.add_extr()
         self.deal()
-        self.save_to_sqlLite(self.df)
-        
+        await self.save_to_sqlLite(self.df)
 
-    def save_to_sqlLite(self, df):
-        self.db.save_to_file(f'table_{self.batch_id}', df)
-        self.db.close_db() 
+
+    async def save_to_sqlLite(self, df):
+        self.db.save_to_file(f'table_{self.batch_id}', df, True)
 
 
    

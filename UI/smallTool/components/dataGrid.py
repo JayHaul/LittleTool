@@ -1,5 +1,6 @@
 ﻿import math
 
+import asyncio
 import PyQt6.QtGui
 import PyQt6.QtWidgets
 import qfluentwidgets
@@ -9,9 +10,13 @@ from PyQt6.QtWidgets import QTableWidgetItem, \
 from qfluentwidgets import FluentIcon as FIF
 from qfluentwidgets import PipsScrollButtonDisplayMode, HorizontalPipsPager
 
+import UI.smallTool.common.utils
 from ..components.customTableView import CustomTableView
 from ..service.dataService.Zero import Zero
+from UI.smallTool.common.utils import AsyncWorker
+import logging
 
+log = logging.getLogger(__name__)
 
 def get_page(data, page, page_size):
     start = (page - 1) * page_size
@@ -31,23 +36,35 @@ class DataGrid(QWidget):
 
     
     def show_deal_dialog(self, index):
-        print(index)
         self.message_box = qfluentwidgets.MessageBoxBase(self)
         self.method_comboBox = qfluentwidgets.ComboBox()
-        self.method_comboBox.addItems(['方案一', '方案二', '方案三'])
+        self.method_comboBox.addItems(['Zero'])
+        self.method_comboBox.setCurrentIndex(1)
         self.method_comboBox.setPlaceholderText("请选择处理方案")
         self.message_box.viewLayout.addWidget(self.method_comboBox)
         self.message_box.yesButton.setText('应用')
         self.message_box.cancelButton.setText('取消')
         self.message_box.yesButton.clicked.connect(lambda: self.apply_deal_method(index, self.method_comboBox.currentIndex()))
         self.message_box.exec()
-        
+
     def apply_deal_method(self, index, method_index):
         # self.method_comboBox.currentIndex()
+        async def apply_Zero(index, batch_id = 0):
+            await Zero(self.tableView.item(index, 1).text(), batch_id).execute()
         if method_index == 0:
-            # TODO 设置为异步调用
-            Zero(self.tableView.item(index, 1).text(), 0).execute()
-        
+            loop = asyncio.new_event_loop()
+            # 创建 AsyncWorker 实例
+            worker = AsyncWorker(loop)
+            # 连接 finished 信号
+            worker.finished.connect(lambda: self.deal_finished())
+            # 执行异步函数
+            worker.execute_async(apply_Zero(index))
+            
+            a = self.tableView.item(index, 4)
+            pass 
+            
+    def deal_finished(self):
+        log.debug("处理完成")
     def __init_data_grid(self, header, datas):
         self.vBoxLayout = QVBoxLayout(self)
 

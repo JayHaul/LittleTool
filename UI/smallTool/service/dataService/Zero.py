@@ -18,8 +18,7 @@ class Zero(DealDataBase):
 
 
 if __name__ == '__main__':
-    a = Zero(r"E:\workspace\Python\Desktop\0_points.csv", 1)
-    a.execute() 
+    Zero(r"E:\workspace\Python\Desktop\0_points.csv", 1).execute()
     
     
     

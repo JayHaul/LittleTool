@@ -1,6 +1,13 @@
-﻿import os
+﻿import asyncio
+import os
+
+from PyQt6.QtCore import QThread,pyqtSignal
+
 from ..common.config import cfg
 
+import logging
+
+log = logging.getLogger(__name__)
 class FileInfo:
     def __init__(self, name, path=None):
         self.full_path = path
@@ -25,6 +32,38 @@ def get_file_from_folder(directory, suffixes=None):
     
     return files_with_suffix
 
+class AsyncWorker(QThread):
+
+    def __init__(self, loop=None):
+        super().__init__()
+        if loop is None:
+            self.loop = asyncio.new_event_loop()
+        else:
+            self.loop = loop
+        self.future = None
+
+    def run(self):
+        asyncio.set_event_loop(self.loop)
+        log.debug("开始执行")
+        if self.future:
+            try:
+                self.loop.run_until_complete(self.future)
+                log.debug("执行完成")
+            except Exception as e:
+                log.exception("执行过程中发生异常：")
+            finally:
+                pass
+                # self.finished.emit()
+        else:
+            log.warning("没有 future 可执行")
+        
+
+    def execute_async(self, coro):
+        if not self.isRunning():
+            self.future = asyncio.wrap_future(asyncio.run_coroutine_threadsafe(coro, self.loop))
+            self.start()
+        else:
+            print("Thread is already running.")
 
 class Utils:
     def __init__(self):
