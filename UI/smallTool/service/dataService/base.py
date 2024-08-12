@@ -39,15 +39,15 @@ class DealDataBase:
         self.df = df_c
         
     # 编写子类来重写该方法,这是用来处理数据的
-    def deal(self):
+    def deal(self, index):
         pass 
     
     # 这是整个处理流程
     # 比如处理类 Zero:
     # Zero(数据文件路径).execute()就可以了
-    async def execute(self):
+    async def execute(self, index):
         self.add_extr()
-        self.deal()
+        self.deal(index)
         await self.save_to_sqlLite(self.df)
 
 

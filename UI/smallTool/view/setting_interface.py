@@ -1,20 +1,14 @@
 ﻿# coding:utf-8
-import qfluentwidgets
-from qfluentwidgets import (SettingCardGroup, SwitchSettingCard,
-                            OptionsSettingCard, PushSettingCard,
-                            HyperlinkCard, PrimaryPushSettingCard, ScrollArea,
-                            ComboBoxSettingCard, ExpandLayout, Theme, CustomColorSettingCard,
-                            setTheme, setThemeColor, RangeSettingCard, isDarkTheme)
-from qfluentwidgets import FluentIcon as FIF
-from qfluentwidgets import InfoBar
-from PyQt6.QtCore import Qt, pyqtSignal, QUrl, QStandardPaths
-from PyQt6.QtGui import QDesktopServices
+from PyQt6.QtCore import Qt, QStandardPaths
 from PyQt6.QtWidgets import QWidget, QLabel, QFileDialog
+from qfluentwidgets import FluentIcon as FIF
+from qfluentwidgets import (SettingCardGroup, PushSettingCard,
+                            ScrollArea,
+                            ExpandLayout)
 
-from ..components.customAddFolderButton import FolderListSettingCard, TextListSettingCard
 from ..common.config import cfg
-from ..common.signal_bus import signalBus
 from ..common.style_sheet import StyleSheet
+from ..components.customAddFolderButton import FolderListSettingCard, TextListSettingCard
 
 
 class SettingInterface(ScrollArea):

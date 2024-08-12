@@ -3,7 +3,7 @@ import os
 
 from PyQt6.QtCore import QThread,pyqtSignal
 
-from ..common.config import cfg
+from UI.smallTool.common.config import cfg
 
 import logging
 

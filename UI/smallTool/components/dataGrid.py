@@ -10,9 +10,8 @@ from PyQt6.QtWidgets import QTableWidgetItem, \
 from qfluentwidgets import FluentIcon as FIF
 from qfluentwidgets import PipsScrollButtonDisplayMode, HorizontalPipsPager
 
-import UI.smallTool.common.utils
-from ..components.customTableView import CustomTableView
-from ..service.dataService.Zero import Zero
+from UI.smallTool.components.customTableView import CustomTableView
+from UI.smallTool.service.dataService.PlanA import PlanA
 from UI.smallTool.common.utils import AsyncWorker
 import logging
 
@@ -38,9 +37,8 @@ class DataGrid(QWidget):
     def show_deal_dialog(self, index):
         self.message_box = qfluentwidgets.MessageBoxBase(self)
         self.method_comboBox = qfluentwidgets.ComboBox()
-        self.method_comboBox.addItems(['Zero'])
-        self.method_comboBox.setCurrentIndex(1)
-        self.method_comboBox.setPlaceholderText("请选择处理方案")
+        self.method_comboBox.addItems(['PlanA'])
+        # self.method_comboBox.setCurrentIndex(0)
         self.message_box.viewLayout.addWidget(self.method_comboBox)
         self.message_box.yesButton.setText('应用')
         self.message_box.cancelButton.setText('取消')
@@ -49,22 +47,34 @@ class DataGrid(QWidget):
 
     def apply_deal_method(self, index, method_index):
         # self.method_comboBox.currentIndex()
-        async def apply_Zero(index, batch_id = 0):
-            await Zero(self.tableView.item(index, 1).text(), batch_id).execute()
-        if method_index == 0:
-            loop = asyncio.new_event_loop()
-            # 创建 AsyncWorker 实例
-            worker = AsyncWorker(loop)
-            # 连接 finished 信号
-            worker.finished.connect(lambda: self.deal_finished())
-            # 执行异步函数
-            worker.execute_async(apply_Zero(index))
+        async def apply_method():
+            if method_index == 0:
+                operate_button = self.tableView.cellWidget(index, 4).layout().itemAt(0).widget()
+                if isinstance(operate_button, qfluentwidgets.PrimaryToolButton):
+                    operate_button.setIcon(FIF.SYNC)
+                    operate_button.setDisabled(True)
+                await PlanA(self.tableView.item(index, 1).text(), method_index).execute(index)
+                
+                    
+                
+        loop = asyncio.new_event_loop()
+        # 创建 AsyncWorker 实例
+        worker = AsyncWorker(loop)
+        # 连接 finished 信号
+        worker.finished.connect(lambda: self.deal_finished(index))
+        # 执行异步函数
+        worker.execute_async(apply_method())
+        
             
-            a = self.tableView.item(index, 4)
-            pass 
             
-    def deal_finished(self):
+    def deal_finished(self, index):
         log.debug("处理完成")
+        
+        operate_button = self.tableView.cellWidget(index, 4).layout().itemAt(0).widget()
+        
+        if isinstance(operate_button, qfluentwidgets.PrimaryToolButton):
+            operate_button.setIcon(FIF.ACCEPT_MEDIUM)
+            
     def __init_data_grid(self, header, datas):
         self.vBoxLayout = QVBoxLayout(self)
 

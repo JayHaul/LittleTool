@@ -1,13 +1,30 @@
 ﻿# coding:utf-8
 import sys
 
+## 过滤组件库的广告提示
+class FilterPrints:
+    def __init__(self):
+        self.original_stdout = sys.stdout
+
+    def write(self, message):
+        if "QFluentWidgets Pro" not in message:
+            self.original_stdout.write(message)
+
+    def flush(self):
+        self.original_stdout.flush()
+# 在执行脚本之前捕获 stdout
+sys.stdout = FilterPrints()
+
 from PyQt6.QtCore import Qt, QTranslator
 from PyQt6.QtWidgets import QApplication
 
 from view.main_window import MainWindow
 import logging
-
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+
+# 脚本执行完毕后，恢复原始 stdout
+sys.stdout = sys.stdout.original_stdout
+
 
 # create application
 app = QApplication(sys.argv)
