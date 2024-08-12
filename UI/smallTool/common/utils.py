@@ -33,7 +33,7 @@ def get_file_from_folder(directory, suffixes=None):
     return files_with_suffix
 
 class AsyncWorker(QThread):
-
+    error = pyqtSignal(Exception)
     def __init__(self, loop=None):
         super().__init__()
         if loop is None:
@@ -50,6 +50,7 @@ class AsyncWorker(QThread):
                 self.loop.run_until_complete(self.future)
                 log.debug("执行完成")
             except Exception as e:
+                self.error.emit(e)
                 log.exception("执行过程中发生异常：")
             finally:
                 pass

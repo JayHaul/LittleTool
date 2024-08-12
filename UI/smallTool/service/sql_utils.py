@@ -10,17 +10,15 @@ class SQLUtils:
         log.debug(f"连接到数据库 : {db_path}\data.db")
 
     def save_to_file(self, table_name, dataframe, override=False):
+        if not self.db.has_table(table_name):
+            self.db.create_table(table_name)
+            log.debug(f"表{table_name}不存在,已经自动创建")
+        table = self.db.load_table(table_name)
         if override:
-            table = self.db.create_table(table_name, 'ID')
-            table.drop()
-            log.debug(f"已经删除表{table_name}")
+            table.delete(file = dataframe['file'][0])
             table.insert_many(dataframe.to_dict(orient='records'))
             log.debug(f"数据保存完毕")
         else:
-            if not self.db.has_table(table_name):
-                self.db.create_table(table_name, 'ID')
-                log.debug(f"表{table_name}不存在,已经自动创建")
-            table = self.db.load_table(table_name)
             table.insert_many(dataframe.to_dict(orient='records'))
             log.debug(f"数据保存完毕")
     

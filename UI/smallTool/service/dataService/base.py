@@ -34,8 +34,8 @@ class DealDataBase:
         df_c = self.df.copy()
         df_c.loc[:, 'frame'] = np.ceil( self.df['Utc_msec'] / cycle )
         df_c.loc[:, 'file'] = self.file_name
-        # 添加行号作为ID列
-        df_c = df_c.reset_index().rename(columns={'index': 'ID'})
+        # # 添加行号作为ID列
+        # df_c = df_c.reset_index().rename(columns={'index': 'ID'})
         self.df = df_c
         
     # 编写子类来重写该方法,这是用来处理数据的
